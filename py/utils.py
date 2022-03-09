@@ -256,8 +256,8 @@ def read_cdfs_fig11():
         ax0.text(-0.05, 0.9, lab[m]+" "+times[m], ha="left", va="center", transform=ax0.transAxes)
         Vv = 3*1e8*np.cos(np.deg2rad(K.Z))*np.array(K.D*1e-3/K.F)
         Vh = 3*1e8*np.sin(np.deg2rad(K.Z))*np.array(K.D*1e-3/K.F)
-        txt = r"$V_z=%.1f \pm %.1f$ m/s"%(Vv.mean(), Vv.std()/10) + "\n"\
-            r"$V_h=%.1f \pm %.1f$ m/s"%(Vh.mean(), Vh.std()/10) 
+        txt = r"$V_z=%.1f \pm %.1f$ m/s"%(Vv.mean(), Vv.std()/10)# + "\n"\
+            #r"$V_h=%.1f \pm %.1f$ m/s"%(Vh.mean(), Vh.std()/10) 
         ax0.text(0.01, 0.2, txt, ha="left", va="center", transform=ax0.transAxes, fontdict={"size":6})
         if m==2:
             fig.subplots_adjust(right=0.8)
@@ -276,6 +276,7 @@ def read_cdfs_fig11():
     hours = mdates.MinuteLocator(range(0, 60, 15))
     ax0.xaxis.set_major_locator(hours)
     ax0.set_ylabel("$foE_s$, MHz", fontdict={"size":8, "fontweight": "bold", "color": "r"})
+    ax0.set_xlabel("Time, UT", fontdict={"size":8, "fontweight": "bold"})
     ax0.axvline(dt.datetime(2012,6,16,9,56), lw=0.6, color="k", ls="--")
     ax0.set_ylim(2, 4)
     ax0.set_xlim(dt.datetime(2012,6,16,9,30),dt.datetime(2012,6,16,10,30))
@@ -283,7 +284,8 @@ def read_cdfs_fig11():
     ax0 = ax0.twinx()
     ax0.xaxis.set_major_formatter(DateFormatter(r"{%H}^{%M}"))
     ax0.xaxis.set_major_locator(hours)
-    ax0.set_ylabel("$hmE_s$, km", fontdict={"size":8, "fontweight": "bold", "color": "b"})
+    ax0.set_ylabel("$h'E_s$, km", fontdict={"size":8, "fontweight": "bold", "color": "b"})
+    ax0.set_xlabel("Time, UT", fontdict={"size":8, "fontweight": "bold"})
     ax0.set_ylim(100, 150)
     ax0.plot(es.date, es.hEs, "bD", ms=0.9, alpha=0.9)
     ax0.text(0.05, 0.8, "(g)", ha="left", va="center", transform=ax0.transAxes)
