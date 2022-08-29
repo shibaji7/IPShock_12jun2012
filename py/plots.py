@@ -21,28 +21,27 @@ def grid(nlats=180, nlons=360):
     coords[:,:,2] = 0 # height above WGS84 in km
     return coords
 
-def _plot_contours(ax, x, y, z, *args, **kwargs):
+def _plot_contours(ax, x, y, z, arrow, step=20, *args, **kwargs):
     transform_before_plotting = kwargs.pop("transform_before_plotting", False)
     if transform_before_plotting:
         # transform coordinates *before* passing them to the plotting function
         tmp = ax.projection.transform_points(ccrs.PlateCarree(), x, y)
         x_t, y_t = tmp[..., 0], tmp[..., 1]
+        u, v = arrow*np.cos(np.deg2rad(z)), arrow*np.sin(np.deg2rad(z))
+        #ax.quiver(x_t[::step, ::step], y_t[::step, ::step], u[::step, ::step], v[::step, ::step], color="m")
+        #ax.scatter(x_t[::step, ::step], y_t[::step, ::step], s=0.1, facecolors="none", edgecolors="k")
         return ax.contour(x_t, y_t, z, linewidths=0.4, alpha=0.7, *args, **kwargs)
     else:
         # ... transformation performed by the plotting function creates glitches at the antemeridian
         kwargs["transform"] = ccrs.PlateCarree()
+        ax.scatter(x[::step, ::step], y[::step, ::step], s=0.1, facecolors="none", edgecolors="k")
         return ax.contour(x, y, z, linewidths=0.4, alpha=0.7, *args, **kwargs)
 
-def plot_contours(ax, x, y, z, *args, **kwargs):
+def plot_contours(ax, x, y, z, arrow, step=20, *args, **kwargs):
     fmt = kwargs.pop("fmt", r"%d$^\circ$")
-    fontsize = kwargs.pop("fontsize", 4)
-    #ax.add_feature(cfeature.LAND, facecolor=(1.0, 1.0, 0.9))
-    #ax.add_feature(cfeature.OCEAN, facecolor=(0.9, 1.0, 1.0))
-    #ax.add_feature(cfeature.COASTLINE, edgecolor='silver')
-    #ax.gridlines()
-    levels = [ 5, 10, 15,   20, 30, 60, 90, 150]
-            #np.linspace(10*(int(np.min(z)/10)-1), 10*(int(np.max(z)/10)+1), 11)
-    cs = _plot_contours(ax, x, y, z, levels, *args, **kwargs)
+    fontsize = kwargs.pop("fontsize", 6)
+    levels = [ 40, 45, 50, 60, 65, 70, 75, 80]
+    cs = _plot_contours(ax, x, y, z, arrow, step, levels, *args, **kwargs)
     ax.clabel(cs, cs.levels, inline=True, fmt=fmt, fontsize=fontsize, colors="darkred")
     return
 
@@ -63,7 +62,7 @@ def anotate(ax, x, ys, xlab, ylab, ylim, xlim, cols, labels=[], tag="", xtick=Fa
     ax.axvline(vl, ls="--", lw=0.8, color="darkred")
     if mgn:
         txt = "{}\n$\Lambda_m={}^\circ$\nMLT={}".format(mgn["name"], mgn["mlat"], mgn["mlt"])
-        ax.text(0.8,0.95, txt, ha="center", va="top", transform=ax.transAxes, fontdict={"size":7})
+        ax.text(0.8,0.95, txt, ha="center", va="top", transform=ax.transAxes, fontdict={"size":12})
     return ax
 
 def mean(x, key, start=dt.datetime(2012,6,16,9), end=dt.datetime(2012,6,16,9,30)):
@@ -168,7 +167,7 @@ def create_figure7():
     import eoxmagmod
     
     proj=ccrs.SouthPolarStereo()#ccrs.Orthographic(130, -90)
-    fig = plt.figure(figsize=(2.5,2.5), dpi=300)
+    fig = plt.figure(figsize=(3,3), dpi=300)
     ax = fig.add_subplot(111, projection="sdcarto",\
                          map_projection = proj,\
                          coords="geo", plot_date=dt.datetime(2012,6,16,10))
@@ -195,9 +194,12 @@ def create_figure7():
     mag_components = eval_model(t, coords, shc_model)
     south = (coords[:, 0, 0] < 0).nonzero()[0]
     
-    plot_contours(ax, coords[south, :, 1], coords[south, :, 0], np.abs(mag_components["D"][south, :]),
-                  transform_before_plotting=True)
     
+    I = np.arctan(mag_components["Z"][south, :]/np.sqrt(mag_components["X"][south, :]**2+mag_components["Y"][south, :]**2))*180/np.pi
+    arrow = mag_components["Z"][south, :]/np.sqrt(mag_components["X"][south, :]**2+mag_components["Y"][south, :]**2)
+    
+    plot_contours(ax, coords[south, :, 1], coords[south, :, 0], np.abs(I), arrow, step=10,
+                  transform_before_plotting=True)
     
     fig.savefig("figures/Figure7.png", bbox_inches="tight")
     return
@@ -205,4 +207,4 @@ def create_figure7():
 
 if __name__ == "__main__":
     create_figure7()
-    create_figure1()
+    #create_figure1()

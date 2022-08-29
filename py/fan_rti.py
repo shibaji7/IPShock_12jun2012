@@ -24,6 +24,18 @@ import utils
 CLUSTER_CMAP = plt.cm.gist_rainbow
 
 
+def smooth(x, window_len=51, window="hanning"):
+    if x.ndim != 1: raise ValueError("smooth only accepts 1 dimension arrays.")
+    if x.size < window_len: raise ValueError("Input vector needs to be bigger than window size.")
+    if window_len<3: return x
+    if not window in ["flat", "hanning", "hamming", "bartlett", "blackman"]: raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
+    s = np.r_[x[window_len-1:0:-1],x,x[-2:-window_len-1:-1]]
+    if window == "flat": w = numpy.ones(window_len,"d")
+    else: w = eval("np."+window+"(window_len)")
+    y = np.convolve(w/w.sum(),s,mode="valid")
+    d = window_len - 1
+    y = y[int(d/2):-int(d/2)]
+    return y
 
 def get_cluster_cmap(n_clusters, plot_noise=False):
     cmap = CLUSTER_CMAP
@@ -178,8 +190,8 @@ def create_figure8():
     rio = pd.concat([R,o])
     rio.data = np.roll(rio.data,60)
     
-    fig = plt.figure(figsize=(5, 2), dpi=180 )
-    ax = fig.add_subplot(111)
+    fig = plt.figure(figsize=(5, 5), dpi=180 )
+    ax = fig.add_subplot(211)
     ax.xaxis.set_major_formatter(DateFormatter(r"{%H}^{%M}"))
     hours = mdates.MinuteLocator(range(0, 60, 15))
     ax.xaxis.set_major_locator(hours)
@@ -187,26 +199,30 @@ def create_figure8():
     ax.set_ylabel("\# Echoes/beam", fontdict={"size":8, "fontweight": "bold"})
     ax.text(0.05, 1.05, "Radar: ZHO", ha="left", va="center", 
             transform=ax.transAxes, fontdict={"fontweight": "bold", "size":8})
-    ax.plot(zho.time, zho[0], "ko", alpha=0.6, ms=1.2)
+    ax.plot(zho.time, zho[0], "ko", alpha=0.6, ms=0.8)
     ax.plot(zho.time, smooth(zho[0], 101), "b", ls="-", alpha=0.9, lw=1.2)
     ax.axvline(dt.datetime(2012,6,16,9,56), color="r", lw=0.8, ls="--")
     ax.set_ylim(0,60)
     ax.set_xlim([dt.datetime(2012,6,16,9,30), dt.datetime(2012,6,16,10,30)] )
-    ax.set_xlabel("Time, UT", fontdict={"size":8, "fontweight": "bold"})
     
-#     ax = fig.add_subplot(312)
-#     ax.xaxis.set_major_formatter(DateFormatter(r"{%H}^{%M}"))
-#     hours = mdates.MinuteLocator(range(0, 60, 15))
-#     ax.xaxis.set_major_locator(hours)
-#     ax.set_xlabel("Time, UT", fontdict={"size":8, "fontweight": "bold"})
-#     ax.set_ylabel(r"Absorption ($\beta$), dB", fontdict={"size":8, "fontweight": "bold"})
-#     ax.text(0.05, 1.05, "Riometer: ", ha="left", va="center", 
-#             transform=ax.transAxes, fontdict={"fontweight": "bold", "size":8})
-#     ax.plot(rio.time, rio.data, "ko", alpha=0.6, ms=1.2)
-#     ax.plot(rio.time, smooth(rio.data,11),  "b", ls="-", alpha=0.9, lw=0.8)
-#     ax.set_ylim(0,0.2)
-#     ax.set_xlim([dt.datetime(2012,6,16,9,40), dt.datetime(2012,6,16,10,20)] )
-#     ax.axvline(dt.datetime(2012,6,16,9,56), color="r", lw=0.8, ls="--")
+    o = np.loadtxt("data/YR.beta.txt")
+    print(o.shape)
+    time = [dt.datetime(2012,6,16,9,30)+dt.timedelta(seconds=i) for i in range(3600)]
+    ax = fig.add_subplot(212)
+    ax.set_xlabel("Time, UT", fontdict={"size":8, "fontweight": "bold"})
+    df = pd.DataFrame()
+    df["time"], df["beta"] = time, o[32,:]
+    df = df.interpolate()
+    ax.plot(df.time, smooth(df.beta), "ko", alpha=0.6, ms=0.4)
+    ax.xaxis.set_major_formatter(DateFormatter(r"{%H}^{%M}"))
+    hours = mdates.MinuteLocator(range(0, 60, 15))
+    ax.xaxis.set_major_locator(hours)
+    ax.set_ylabel(r"Absorption ($\beta$), dB", fontdict={"size":8, "fontweight": "bold"})
+    ax.text(0.05, 1.05, "Riometer: YR", ha="left", va="center", 
+            transform=ax.transAxes, fontdict={"fontweight": "bold", "size":8})
+    ax.set_xlim([dt.datetime(2012,6,16,9,30), dt.datetime(2012,6,16,10,30)] )
+    ax.axvline(dt.datetime(2012,6,16,9,56), color="r", lw=0.8, ls="--")
+    ax.set_ylim(0, .2)
     
     fig.savefig("figures/Figure8.png")
     return

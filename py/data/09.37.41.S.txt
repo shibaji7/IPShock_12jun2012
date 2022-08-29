@@ -1,0 +1,71 @@
+2012.06.16 (168) 09:37:41.000
+Station name: Zhong Shan
+URSI code: ZS36R
+Ionosonde model: DPS-4D
+Geographic coordinates: latitude = -69.4, longitude = 76.4
+Gyrofrequency (IGRF): 1.315 MHz
+Dip angle (IGRF): -72.926 Deg
+Declination (IGRF): -79.299934 Deg
+Sun spot number original (from record): 59.0
+Sun spot number smoothed (from Sunspt.asc): 58.9
+ARTIST version: 5002
+NH version: 4.34
+VIEWER version: SAOExplorer v 3.6.1
+
+Ionospheric characteristics
+foF2     5.800     
+foF1     NoValue   
+M(D)     3.49      
+MUF(D)   20.21     
+fmin     1.45      
+foEs     2.60      
+fminF    2.80      
+fminE    NoValue   
+foE      NoValue   
+fxI      6.80      
+h`F      231.5     
+h`F2     231.5     
+h`E      NoValue   
+h`Es     130.0     
+hmE      110.0     
+yE       20.0      
+QF       NoValue   
+QE       NoValue   
+DownF    0.4       
+DownE    NoValue   
+DownEs   0.8       
+FF       0.15      
+FE       NoValue   
+D        NoValue   
+fMUF     5.75      
+h`(fMUF) 319.0     
+dlt foF2 0.000     
+foEp     0.83      
+f(h`F)   3.25      
+f(h`F2)  3.25      
+foF1p    NoValue   
+hmF2     260.9     
+hmF1     NoValue   
+zhalfNm  230.8     
+foF2p    4.73      
+fminEs   1.45      
+yF2      42.2      
+yF1      NoValue   
+TEC      3.9       
+scale F2 21.2      
+B0       44.4      
+B1       1.71      
+D1       NoValue   
+foEa     NoValue   
+h`Ea     NoValue   
+foP      NoValue   
+h`P      NoValue   
+fbEs     NoValue   
+type Es  NoValue   
+
+Regular true height profile
+  90.489 100.000 110.000 120.000 130.000 136.626 140.000 150.000 160.000 163.253 170.000 180.000 189.879 190.000 200.000 210.000 220.000 230.000 240.000 250.000 260.000 260.943 270.000 280.000 290.000 300.000 310.000 320.000 330.000 340.000 350.000 360.000 370.000 380.000 390.000 400.000 410.000 420.000 430.000 440.000 450.000 460.000 470.000 480.000 490.000 500.000 510.000 520.000 530.000 540.000 550.000 560.000 570.000 580.000 590.000 600.000 610.000
+   0.200   0.723   0.834   0.788   0.630   0.384   0.384   0.384   0.384   0.384   0.498   0.667   0.834   0.845   1.380   2.254   3.258   4.044   4.730   5.364   5.795   5.800   5.706   5.430   5.040   4.592   4.126   3.670   3.239   2.842   2.483   2.163   1.880   1.631   1.413   1.223   1.057   0.914   0.790   0.682   0.589   0.509   0.439   0.379   0.327   0.282   0.244   0.210   0.182   0.157   0.135   0.117   0.101   0.087   0.075   0.065   0.056
+
+Auroral true height profile
+ NO AURORAL PROFILE DATA
