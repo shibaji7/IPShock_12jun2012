@@ -192,7 +192,7 @@ def create_figure8():
     
     fig = plt.figure(figsize=(5, 5), dpi=180 )
     ax = fig.add_subplot(211)
-    ax.xaxis.set_major_formatter(DateFormatter(r"{%H}^{%M}"))
+    ax.xaxis.set_major_formatter(DateFormatter(r"${%H}^{%M}$"))
     hours = mdates.MinuteLocator(range(0, 60, 15))
     ax.xaxis.set_major_locator(hours)
     ax.set_xlabel("", fontdict={"size":8, "fontweight": "bold"})
@@ -200,7 +200,7 @@ def create_figure8():
     ax.text(0.05, 1.05, "Radar: ZHO", ha="left", va="center", 
             transform=ax.transAxes, fontdict={"fontweight": "bold", "size":8})
     ax.plot(zho.time, zho[0], "ko", alpha=0.6, ms=0.8)
-    ax.plot(zho.time, smooth(zho[0], 101), "b", ls="-", alpha=0.9, lw=1.2)
+    #ax.plot(zho.time, smooth(zho[0], 101), "b", ls="-", alpha=0.9, lw=1.2)
     ax.axvline(dt.datetime(2012,6,16,9,56), color="r", lw=0.8, ls="--")
     ax.set_ylim(0,60)
     ax.set_xlim([dt.datetime(2012,6,16,9,30), dt.datetime(2012,6,16,10,30)] )
@@ -214,7 +214,7 @@ def create_figure8():
     df["time"], df["beta"] = time, o[32,:]
     df = df.interpolate()
     ax.plot(df.time, smooth(df.beta), "ko", alpha=0.6, ms=0.4)
-    ax.xaxis.set_major_formatter(DateFormatter(r"{%H}^{%M}"))
+    ax.xaxis.set_major_formatter(DateFormatter(r"${%H}^{%M}$"))
     hours = mdates.MinuteLocator(range(0, 60, 15))
     ax.xaxis.set_major_locator(hours)
     ax.set_ylabel(r"Absorption ($\beta$), dB", fontdict={"size":8, "fontweight": "bold"})
